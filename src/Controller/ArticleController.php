@@ -3,9 +3,10 @@
 namespace App\Controller;
 
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 
-class ArticleController
+class ArticleController extends AbstractController
 {
     /**
     *@Route("/")
@@ -22,10 +23,9 @@ class ArticleController
 
     public function show($slug)
     {
-        return new Response(sprintf(
-            'i am in an existencial crysis, %s',
-            $slug
-        ));
+        return $this->render('article/show.html.twig', [
+            'title' => ucwords(str_replace('-', ' ', $slug)),
+        ]);
     }
 }
 
