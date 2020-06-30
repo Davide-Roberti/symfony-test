@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+{% block title %} homepage {% endblock %}
+{% block body %}
+
+<nav>
+    <a href="{{ path('app_homepage') }}">An Existencial Crysis Blog</a>
+</nav>
+
+<div class="container">
+    <a href="{{ path('article_show', { slug: 'how-did-i-get-here'}) }}">
+        <div class="articolo">
+            <h3>How did I get here?</h3>
+        </div>
+    </a>
+
+</div>
+
+{% endblock %}
