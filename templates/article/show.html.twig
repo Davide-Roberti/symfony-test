@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}Read {{title}}{% endblock %}
+{% block title %}Read {{ article.title }}{% endblock %}
 {% block body %}
 
 <nav>
@@ -7,12 +7,15 @@
 </nav>
 
 
-<h1>{{ title }}</h1>
-<span class="js-article-like-count">5</span>
-<a href="{{ path('article_toggle_heart', {slug: slug})}}" class="fa fa-heart-o js-article-like"></a>
+<h1>{{ article.title }}</h1>
+<span>{{ article.author }}</span>
+<span> {{ article.publishedAt ? article.publishedAt|date('Y-m-d') : 'unpublished' }} </span>
+<span class="js-article-like-count">{{ article.heartCount }}</span>
+<a href="{{ path('article_toggle_heart', {slug: article.slug})}}" class="fa fa-heart-o js-article-like"></a>
+<img src="{{ asset(article.imagePath) }}" alt="immagine">
 
 <div class="paragrafi">
-    {{ articleContent|raw }}
+    {{ article.content|markdown }}
 </div>
 
 <div class="commenti">

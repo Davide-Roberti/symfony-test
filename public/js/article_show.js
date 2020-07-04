@@ -1,5 +1,6 @@
 $(document).ready(function() {
-    $('.js-article-like').on('click', function(){
+    $('.js-article-like').on('click', function(e){
+        e.preventDefault();
 
 
         $(this).toggleClass('fa-heart-o').toggleClass('fa-heart');

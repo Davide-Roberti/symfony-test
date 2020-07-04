@@ -7,11 +7,15 @@
 </nav>
 
 <div class="container">
-    <a href="{{ path('article_show', { slug: 'how-did-i-get-here'}) }}">
+    {% for article in articles %}
+    <a href="{{ path('article_show', { slug: article.slug}) }}">
         <div class="articolo">
-            <h3>How did I get here?</h3>
+            <h3>{{ article.title }}</h3>
+            <span>{{ article.author }}</span>
+            <img src="{{ asset(article.imagePath) }}" alt="immagine">
         </div>
     </a>
+    {% endfor %}
 
 </div>
 

@@ -8,6 +8,8 @@ use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Entity\Article;
 
 class ArticleController extends AbstractController
 {
@@ -15,40 +17,50 @@ class ArticleController extends AbstractController
     *@Route("/", name="app_homepage")
     */
 
-    public function homepage()
+    public function homepage(EntityManagerInterface $em)
     {
-        return $this->render('article/homepage.html.twig');
+        $repository = $em->getRepository(Article::class);
+        $articles = $repository->findAllPublishedOrderedByNewest([], ['publishedAt' => 'DESC']);
+        return $this->render('article/homepage.html.twig',
+        [
+            'articles' => $articles,
+        ]
+    );
     }
 
     /**
     *@Route("/news/{slug}", name="article_show")
     */
 
-    public function show($slug, MarkdownParserInterface $markdown, CacheItemPoolInterface $cache)
+    public function show(Article $article, CacheItemPoolInterface $cache)
     {
+
+        // $repository = $em->getRepository(Article::class);
+        // /** @var Article $article */
+        // $article = $repository->findOneBy(['slug' => $slug]);
+        // if(!$article) {
+        //     throw $this->createNotFoundException(sprintf('nessun articolo con slug "%s"', $slug));
+        // }
+
+
         $comments = [
             'whats the meaning of life dude?',
             'have you ever considered jumping around like a kangaroo?',
             'maaaan, youre so meeeeeean'
         ];
 
-        $articleContent = <<<EOF
-Lorem ipsum dolor sit amet, **consectetur** adipisicing elit, sed do [eiusmod](https://lego.com) tempor incididunt ut **labore** et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-EOF;
 
-        $item = $cache->getItem('markdown_'.md5($articleContent));
-        if(!$item->isHit()) {
-            $item->set($markdown->transform($articleContent));
-            $cache->save($item);
-        }
-
-        $articleContent = $item->get();
+        // $item = $cache->getItem('markdown_'.md5($articleContent));
+        // if(!$item->isHit()) {
+        //     $item->set($markdown->transform($articleContent));
+        //     $cache->save($item);
+        // }
+        //
+        // $articleContent = $item->get();
 
 
         return $this->render('article/show.html.twig', [
-            'title' => ucwords(str_replace('-', ' ', $slug)),
-            'articleContent' => $articleContent,
-            'slug' => $slug,
+            'article' => $article,
             'comments' => $comments,
         ]);
     }
@@ -57,10 +69,12 @@ EOF;
     *@Route("/news/{slug}/heart", name="article_toggle_heart", methods={"POST"})
     */
 
-    public function toggleArticleHeart($slug, LoggerInterface $logger)
+    public function toggleArticleHeart(Article $article, LoggerInterface $logger, EntityManagerInterface $em)
     {
-        //DATABASE DA FARE
-        $random = array('hearts' => rand(5, 100));
+        $article->incrementHeartCount();
+        $random = array('hearts' => $article->getHeartCount());
+        $em->flush();
+
         $logger -> info('articolo cuorato');
 
         return new Response(json_encode($random));
