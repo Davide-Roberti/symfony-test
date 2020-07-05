@@ -3,28 +3,31 @@
 {% block body %}
 
 <nav>
-    <a href="{{ path('app_homepage') }}">An Existencial Crysis Blog</a>
+    <div class="container">
+        <a href="{{ path('app_homepage') }}">An Existencial Crysis Blog</a>
+    </div>
 </nav>
+<div class="container">
+    <h1>{{ article.title }}</h1>
+    <span>{{ article.author }}</span>
+    <span> {{ article.publishedAt ? article.publishedAt|date('Y-m-d') : 'unpublished' }} </span>
+    <span class="js-article-like-count">{{ article.heartCount }}</span>
+    <a href="{{ path('article_toggle_heart', {slug: article.slug})}}" class="fa fa-heart-o js-article-like"></a>
+    <img src="{{ asset(article.imagePath) }}" alt="immagine">
 
+    <div class="paragrafi">
+        {{ article.content|markdown }}
+    </div>
 
-<h1>{{ article.title }}</h1>
-<span>{{ article.author }}</span>
-<span> {{ article.publishedAt ? article.publishedAt|date('Y-m-d') : 'unpublished' }} </span>
-<span class="js-article-like-count">{{ article.heartCount }}</span>
-<a href="{{ path('article_toggle_heart', {slug: article.slug})}}" class="fa fa-heart-o js-article-like"></a>
-<img src="{{ asset(article.imagePath) }}" alt="immagine">
+    <div class="commenti">
+        <h2>Commenti ({{comments|length}})</h2>
+            <ul>
+                {% for comment in comments %}
+                    <li>{{ comment }}</li>
+                {% endfor %}
+            </ul>
+    </div>
 
-<div class="paragrafi">
-    {{ article.content|markdown }}
-</div>
-
-<div class="commenti">
-    <h2>Commenti ({{comments|length}})</h2>
-        <ul>
-            {% for comment in comments %}
-                <li>{{ comment }}</li>
-            {% endfor %}
-        </ul>
 </div>
 
 {% endblock %}

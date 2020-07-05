@@ -20,3 +20,16 @@ a {
     font-size: 30px;
     font-weight: 800px;
 }
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.container div {
+    border: 1px solid black;
+}
+
+.container img {
+    width: 150px;
+}

@@ -2,10 +2,12 @@
 {% block title %} homepage {% endblock %}
 {% block body %}
 
-<nav>
-    <a href="{{ path('app_homepage') }}">An Existencial Crysis Blog</a>
-</nav>
 
+<nav>
+    <div class="container">
+        <a href="{{ path('app_homepage') }}">An Existencial Crysis Blog</a>
+    </div>    
+</nav>
 <div class="container">
     {% for article in articles %}
     <a href="{{ path('article_show', { slug: article.slug}) }}">
